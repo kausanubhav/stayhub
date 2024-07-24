@@ -1,0 +1,14 @@
+--we should have a build which is already there coz of vite
+  DO npm run build
+  it will create a dist folder; react code gets cnvrted to html,css,and js.
+
+--now we need to add some code to the backend to host our static assets for us.
+--go to index.ts in backend and add this app.use(express.static(path.join(__dirname,"../../frontend/dist"))); no explanation req for this code
+
+--after adding this to the backend, the root of the backend will host our static content
+--now that we don't another port for frontend, we need to change the base url being used in the frontend while fetching data;
+  just add an optional '' for production(ex. const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "")
+
+--now run build for both bckend and frontend
+
+--set up the gith repo, include the n_modules, .env(both of them), and dist to the .gitignore in the root folder

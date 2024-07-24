@@ -1,0 +1,17 @@
+
+
+-- check if there is a tsconfig.json; if not npx tsc --init
+
+-- open up tsconfig.json and inside the compilerOptions make sure there is outDir:'./dist'
+
+--in the package.json, 
+   scripts: 
+   1. "build": "npm install && npx tsc" (it builds our backend server and fits the code into ./dist)
+   2. "start": "node ./dist/index.js" (start the server in the dist folder; index.js is the entry point for the server)
+
+   these will be used by render.com to deploy our code to their server.
+
+
+--check for frontend scripts
+  
+
