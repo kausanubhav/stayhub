@@ -31,6 +31,7 @@ export const signIn = async (formData: SignInFormData) => {
     body: JSON.stringify(formData),
   })
   const body = await response.json()
+  console.log("body:", body, "message", body.message)
   if (!response.ok) throw new Error(body.message)
   return body
 }
@@ -51,5 +52,16 @@ export const validateToken = async () => {
     credentials: "include",
   })
   if (!response.ok) throw new Error("Token invalid")
+  return await response.json()
+}
+
+//Add my hotel
+export const addMyHotel = async (hotelFormData: FormData) => {
+  const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
+    method: "POST",
+    credentials: "include",
+    body: hotelFormData,
+  })
+  if (!response.ok) throw new Error("Failed to add hotel")
   return await response.json()
 }
