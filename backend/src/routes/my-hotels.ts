@@ -3,7 +3,8 @@ import multer from "multer"
 //mport { v2 as cloudinary } from "cloudinary"
 import FormData from "form-data"
 import axios from "axios"
-import Hotel, { HotelType } from "../models/hotel"
+import Hotel from "../models/hotel"
+import { HotelType } from "../shared/types"
 import { verifyToken } from "../middleware/auth"
 import { body } from "express-validator"
 
@@ -87,5 +88,16 @@ router.post(
     }
   }
 )
+
+//Get my hotels /api/my-hotels
+
+router.get("/", verifyToken, async (req: Request, res: Response) => {
+  try {
+    const hotels = await Hotel.find({ userId: req.userId })
+    res.status(200).json(hotels)
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching hotels" })
+  }
+})
 
 export default router
