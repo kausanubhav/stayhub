@@ -56,23 +56,7 @@ router.post(
 
       //Approach 2: Instead of using base64, we will upload directly as binary data; use form-data library for that
       // for files with bigger size
-      const uploadToCloudinary = async (file: Express.Multer.File) => {
-        const form = new FormData()
-        form.append("file", file.buffer, { filename: file.originalname })
-        form.append("upload_preset", "my_preset")
-
-        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/de41eqe7u/image/upload`
-        const response = await axios.post(cloudinaryUrl, form, {
-          headers: {
-            ...form.getHeaders(),
-          },
-        })
-
-        return response.data.secure_url
-      }
-
-      const uploadPromises = imageFiles.map(uploadToCloudinary)
-      const imageUrls = await Promise.all(uploadPromises)
+      const imageUrls = await uploadImages(imageFiles)
 
       newHotel.imageUrls = imageUrls
       newHotel.lastUpdated = new Date()
@@ -100,4 +84,69 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
   }
 })
 
+//Get a hotel with id
+router.get("/:id", verifyToken, async (req: Request, res: Response) => {
+  const id = req.params.id.toString()
+
+  try {
+    const hotel = await Hotel.findOne({ _id: id, userId: req.userId })
+    res.status(200).json(hotel)
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching hotels" })
+  }
+})
+
+//Update a hotel
+router.put(
+  "/:hotelId",
+  verifyToken,
+  upload.array("imageFiles"),
+  async (req: Request, res: Response) => {
+    try {
+      const updatedHotel: HotelType = req.body
+      updatedHotel.lastUpdated = new Date()
+      const hotel = await Hotel.findOneAndUpdate(
+        {
+          _id: req.params.hotelId,
+          userId: req.userId,
+        },
+        updatedHotel,
+        { new: true }
+      )
+
+      if (!hotel) return res.status(404).json({ message: "Hotel not found" })
+
+      const files = req.files as Express.Multer.File[]
+      const updatedImageUrls = await uploadImages(files)
+
+      hotel.imageUrls = [...updatedImageUrls, ...(updatedHotel.imageUrls || [])]
+
+      await hotel.save()
+      res.status(201).json(hotel)
+    } catch (error) {
+      return res.status(500).json({ message: "Something went wrong!" })
+    }
+  }
+)
+
+async function uploadImages(imageFiles: Express.Multer.File[]) {
+  const uploadToCloudinary = async (file: Express.Multer.File) => {
+    const form = new FormData()
+    form.append("file", file.buffer, { filename: file.originalname })
+    form.append("upload_preset", "my_preset")
+
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/de41eqe7u/image/upload`
+    const response = await axios.post(cloudinaryUrl, form, {
+      headers: {
+        ...form.getHeaders(),
+      },
+    })
+
+    return response.data.secure_url
+  }
+
+  const uploadPromises = imageFiles.map(uploadToCloudinary)
+  const imageUrls = await Promise.all(uploadPromises)
+  return imageUrls
+}
 export default router

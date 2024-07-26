@@ -71,3 +71,27 @@ test("should display hotels", async ({ page }) => {
   const addHotelLinkLocator = page.locator('role=link[name="Add Hotel"]')
   await expect(addHotelLinkLocator.first()).toBeVisible()
 })
+
+test("should edit hotel", async ({ page }) => {
+  await page.goto(`${UI_URL}/my-hotels`)
+
+  const viewDetailsLinkLocator = page.locator('role=link[name="View Details"]')
+  await viewDetailsLinkLocator.first().click()
+
+  // await page.waitForSelector('[name="name"]',{state:"attached"})
+  const nameField = page.locator('[name="name"]')
+  await nameField.waitFor({ state: "attached" })
+
+  await expect(nameField).toHaveValue(`Test Hotel ${uniqueId}`)
+
+  await nameField.fill(`Test Hotel ${uniqueId} new`)
+
+  await page.getByRole("button", { name: "Save" }).click()
+  await expect(page.getByText("Hotel saved")).toBeVisible()
+  
+  await page.reload()
+
+  await expect(nameField).toHaveValue(`Test Hotel ${uniqueId} new`)
+  await nameField.fill(`Test Hotel ${uniqueId}`)
+  await page.getByRole('button',{name:'Save'}).click()
+})

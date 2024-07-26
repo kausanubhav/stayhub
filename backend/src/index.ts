@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
 app.use(helmet()) // Adds security-related headers
 app.use(compression()) // Compresses responses
-app.use(morgan("combined")) // Logs HTTP requests
+//app.use(morgan("combined")) // Logs HTTP requests
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }))
