@@ -22,10 +22,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
-  },
-  "include": [
-    "src/**/*.ts",
-    "src/backend/src/shared/types.ts" // Add this line to include the specific file
-  ]
+  }
+  // "include": [
+  //   "src/**/*.ts",
+  //   "src/backend/src/shared/types.ts" // Add this line to include the specific file
+  // ]
   //"exclude": ["node_modules"]
 }
