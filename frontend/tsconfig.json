@@ -8,14 +8,5 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  // "compilerOptions": {
-  //   "baseUrl": "./",
-  //   "paths": {
-  //     "@shared/*": ["../backend/src/shared/*"] // Map @shared to the backend directory
-  //   }
-  // }
-  // "compilerOptions": {
-  //   "target":"ESNext",
-  //   "types":["vite/client"]
-  // }
+
 }

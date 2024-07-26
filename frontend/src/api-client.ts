@@ -1,7 +1,6 @@
 import { RegisterFormData } from "./pages/Register"
 import { SignInFormData } from "./pages/SignIn"
 // import {HotelType} from '@shared/types'
-import { HotelType } from "../../backend/src/shared/types.ts"
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || ""
 
@@ -69,6 +68,23 @@ export const addMyHotel = async (hotelFormData: FormData) => {
 }
 
 //Get hotels
+export type HotelType = {
+  _id: string
+  userId: string
+  name: string
+  city: string
+  country: string
+  description: string
+  type: string
+  adultCount: number
+  childCount: number
+  facilities: string[]
+  pricePerNight: number
+  starRating: number
+  imageUrls: string[]
+  lastUpdated: Date
+}
+
 export const fetchMyHotels = async (): Promise<HotelType[]> => {
   const response = await fetch(`${API_BASE_URL}/api/my-hotels`, {
     credentials: "include",
