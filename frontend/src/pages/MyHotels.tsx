@@ -12,7 +12,7 @@ type MyHotelsProps = {}
 const MyHotels: FC<MyHotelsProps> = () => {
   const { showToast } = useAppContext()
   const { data: hotelData } = useQuery("fetchMyHotels", apiClient.fetchMyHotels, {
-    onError: () => showToast({}),
+    onError: (error) => showToast({ type: "ERROR", message: error.message }),
   })
 
   if (!hotelData) return <span>No Hotels found</span>
