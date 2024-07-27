@@ -22,7 +22,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.ts", "src/**/*.tsx", "../backend/src/shared/**/*"]
   // "include": [
   //   "src/**/*.ts",
   //   "src/backend/src/shared/types.ts" // Add this line to include the specific file
