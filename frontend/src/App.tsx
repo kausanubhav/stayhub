@@ -7,18 +7,35 @@ import { useAppContext } from "./contexts/AppContext"
 import MyHotels from "./pages/MyHotels"
 import EditHotel from "./pages/EditHotel"
 import Search from "./pages/Search"
+import Detail from "./pages/Detail"
+import Home from "./pages/Home"
 
 function App() {
   const { isLoggedIn } = useAppContext()
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout>hello</Layout>} />
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Home />
+            </Layout>
+          }
+        />
         <Route
           path="/register"
           element={
             <Layout>
               <Register />
+            </Layout>
+          }
+        />
+        <Route
+          path="/detail/:hotelId"
+          element={
+            <Layout>
+              <Detail />
             </Layout>
           }
         />
@@ -38,8 +55,6 @@ function App() {
             </Layout>
           }
         />
-
-
 
         {isLoggedIn && (
           <>
@@ -69,8 +84,6 @@ function App() {
             />
           </>
         )}
-
-
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
