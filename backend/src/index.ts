@@ -12,6 +12,7 @@ import compression from "compression"
 import authRoutes from "./routes/auth"
 import userRoutes from "./routes/users"
 import myHotelsRoutes from './routes/my-hotels'
+import hotelRoutes from './routes/hotels'
 
 const connectionString = process.env.MONGO_CONNECTION_STRING as string
 if (!connectionString) {
@@ -51,6 +52,7 @@ app.use(cookieParser())
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/my-hotels", myHotelsRoutes)
+app.use('/api/hotels',hotelRoutes)
 
 app.get("*",(req:Request,res:Response)=>{
   res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"))
