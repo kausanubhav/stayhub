@@ -91,8 +91,8 @@ const Search = () => {
       <div className="flex flex-col gap-5 flex-1">
         <div className="flex justify-between items-center ">
           <span className="text-xl font-bold">
-            {hotelData?.pagination?.total} {hotelData?.pagination?.total > 1 ? "hotels" : "hotel"} found{" "}
-            {destination ? `in ${destination}` : ""}
+            {hotelData?.pagination?.total} {hotelData?.pagination?.total > 1 ? "hotels" : "hotel"}{" "}
+            found {destination ? `in ${destination}` : ""}
           </span>
           <select
             value={sortOption}
@@ -110,8 +110,8 @@ const Search = () => {
         ))}
         <div>
           <Pagination
-            page={hotelData?.pagination?.page || 1}
-            pages={hotelData?.pagination?.pages}
+            page={hotelData?.pagination.page || 1}
+            pages={hotelData?.pagination.pages || 1}
             onPageChange={(page) => setPage(page)}
           />
         </div>

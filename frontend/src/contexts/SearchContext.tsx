@@ -40,5 +40,5 @@ export const useSearchContext = () => {
   if (!context) {
     throw new Error("useSearchContext must be used within an AppContextProvider")
   }
-  return context as SearchContext
+  return context as SearchContextType
 }

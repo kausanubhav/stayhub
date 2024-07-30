@@ -128,7 +128,8 @@ export type SearchParams = {
   facilities?: string[]
   types?: string[]
   maxPrice?: string
-  sortOptions?: string
+  sortOption?: string
+  stars?: string[]
 }
 export const searchHotels = async (searchParams: SearchParams): Promise<HotelSearchResponse> => {
   const queryParams = new URLSearchParams()
