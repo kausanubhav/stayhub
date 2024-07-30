@@ -1,4 +1,3 @@
-import { SearchParamsType } from "./contexts/SearchContext"
 import { RegisterFormData } from "./pages/Register"
 import { SignInFormData } from "./pages/SignIn"
 import { HotelSearchResponse, HotelType } from "@shared/types"

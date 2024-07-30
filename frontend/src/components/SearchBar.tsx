@@ -59,7 +59,6 @@ const SearchBar: FC<SearchBarProps> = () => {
           {" "}
           Adults:
           <input
-            type="text"
             className="w-full p-1 focus:outline-none font-bold"
             type="number"
             min={1}
@@ -73,7 +72,6 @@ const SearchBar: FC<SearchBarProps> = () => {
           {" "}
           Children:
           <input
-            type="text"
             className="w-full p-1 focus:outline-none font-bold"
             type="number"
             min={0}
