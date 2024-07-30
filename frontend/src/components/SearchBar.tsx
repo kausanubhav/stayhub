@@ -25,7 +25,7 @@ const SearchBar: FC<SearchBarProps> = () => {
       [name]: value,
     }))
   }
-  const handleDateChange = (date: Date | undefined, name: "checkIn" | "checkOut") => {
+  const handleDateChange = (date: Date | null, name: "checkIn" | "checkOut") => {
     if (date) {
       setLocalSearchParams((prev) => ({
         ...prev,
