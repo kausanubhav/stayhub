@@ -1,5 +1,5 @@
 import { SearchParamsType, useSearchContext } from "@src/contexts/SearchContext"
-import { FC, FormEvent, useState } from "react"
+import { FC, FormEvent, useEffect, useRef, useState } from "react"
 import { MdTravelExplore } from "react-icons/md"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -12,6 +12,9 @@ const SearchBar: FC<SearchBarProps> = () => {
   const [localSearchParams, setLocalSearchParams] = useState<SearchParamsType>(searchParams)
   const navigate = useNavigate()
 
+  const [isFixed, setIsFixed] = useState(false)
+  const searchBarRef = useRef<HTMLFormElement | null>(null)
+  const originalOffsetTop = useRef<number>(0)
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     saveSearchValues(localSearchParams)
@@ -37,95 +40,122 @@ const SearchBar: FC<SearchBarProps> = () => {
   const minDate = new Date()
   const maxDate = new Date()
   maxDate.setFullYear(maxDate.getFullYear() + 1)
+
+  const handleScroll = () => {
+    if (searchBarRef.current) {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop
+      if (scrollTop >= originalOffsetTop.current) {
+        setIsFixed(true)
+      } else {
+        setIsFixed(false)
+      }
+    }
+  }
+  useEffect(() => {
+    if (searchBarRef.current) {
+      originalOffsetTop.current = searchBarRef.current.offsetTop
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+
   return (
-    <form
-      className="-mt-8 p-3 bg-orange-400 shadow-md rounded grid grid-cols-2 lg:grid-gols-3 2xl:grid-cols-5 items-center gap-4"
-      onSubmit={handleSubmit}
-    >
-      <div className="flex flex-row flex-1 bg-white items-center p-2">
-        <MdTravelExplore size={25} className="mr-2" />
-        <input
-          placeholder="Where are you going?"
-          className="w-full text-md focus:outline-none"
-          type="text"
-          name="destination"
-          value={localSearchParams.destination}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="bg-white flex flex-1 px-2 py-1 gap-2">
-        <label className="flex items-center">
-          {" "}
-          Adults:
+    <>
+      <form
+        ref={searchBarRef}
+        className={`transition-all duration-400  p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
+          isFixed ? " fixed top-0 left-auto  z-50 opacity-90 bg-blue-800" : "-mt-8 bg-orange-400 "
+        } ${!isFixed ? "w-full" : "max-w-6xl"}`}
+        onSubmit={handleSubmit}
+      >
+        <div className="flex flex-row flex-1 bg-white items-center p-2">
+          <MdTravelExplore size={25} className="mr-2" />
           <input
-            className="w-full p-1 focus:outline-none font-bold"
-            type="number"
-            min={1}
-            max={20}
-            name="adultCount"
-            value={localSearchParams.adultCount}
+            placeholder="Where are you going?"
+            className="w-full text-md focus:outline-none"
+            type="text"
+            name="destination"
+            value={localSearchParams.destination}
             onChange={handleInputChange}
           />
-        </label>
-        <label className="flex items-center">
-          {" "}
-          Children:
-          <input
-            className="w-full p-1 focus:outline-none font-bold"
-            type="number"
-            min={0}
-            max={20}
-            name="childCount"
-            value={localSearchParams.childCount}
-            onChange={handleInputChange}
+        </div>
+
+        <div className="bg-white flex flex-1 px-2 py-1 gap-2">
+          <label className="flex items-center">
+            {" "}
+            Adults:
+            <input
+              className="w-full p-1 focus:outline-none font-bold"
+              type="number"
+              min={1}
+              max={20}
+              name="adultCount"
+              value={localSearchParams.adultCount}
+              onChange={handleInputChange}
+            />
+          </label>
+          <label className="flex items-center">
+            {" "}
+            Children:
+            <input
+              className="w-full p-1 focus:outline-none font-bold"
+              type="number"
+              min={0}
+              max={20}
+              name="childCount"
+              value={localSearchParams.childCount}
+              onChange={handleInputChange}
+            />
+          </label>
+        </div>
+
+        <div>
+          <DatePicker
+            name="checkIn"
+            selected={localSearchParams.checkIn}
+            onChange={(date) => handleDateChange(date, "checkIn")}
+            selectsStart
+            startDate={localSearchParams.checkIn}
+            endDate={localSearchParams.checkOut}
+            minDate={minDate}
+            maxDate={maxDate}
+            placeholderText="Check-in Date"
+            className="min-w-full bg-white p-2 focus:outline-none"
+            wrapperClassName="min-w-full"
           />
-        </label>
-      </div>
+        </div>
+        <div>
+          <DatePicker
+            name="checkOut"
+            selected={localSearchParams.checkOut}
+            onChange={(date) => handleDateChange(date, "checkOut")}
+            selectsStart
+            startDate={localSearchParams.checkIn}
+            endDate={localSearchParams.checkOut}
+            minDate={minDate}
+            maxDate={maxDate}
+            placeholderText="Check-out Date"
+            className="min-w-full bg-white p-2 focus:outline-none"
+            wrapperClassName="min-w-full"
+          />
+        </div>
 
-      <div>
-        <DatePicker
-          name="checkIn"
-          selected={localSearchParams.checkIn}
-          onChange={(date) => handleDateChange(date, "checkIn")}
-          selectsStart
-          startDate={localSearchParams.checkIn}
-          endDate={localSearchParams.checkOut}
-          minDate={minDate}
-          maxDate={maxDate}
-          placeholderText="Check-in Date"
-          className="min-w-full bg-white p-2 focus:outline-none"
-          wrapperClassName="min-w-full"
-        />
-      </div>
-      <div>
-        <DatePicker
-          name="checkOut"
-          selected={localSearchParams.checkOut}
-          onChange={(date) => handleDateChange(date, "checkOut")}
-          selectsStart
-          startDate={localSearchParams.checkIn}
-          endDate={localSearchParams.checkOut}
-          minDate={minDate}
-          maxDate={maxDate}
-          placeholderText="Check-out Date"
-          className="min-w-full bg-white p-2 focus:outline-none"
-          wrapperClassName="min-w-full"
-        />
-      </div>
-
-      <div className="flex gap-1">
-        <button
-          type="submit"
-          className="w-2/3 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500"
-        >
-          Search
-        </button>
-        <button className="w-1/3 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
-          Clear
-        </button>
-      </div>
-    </form>
+        <div className="flex gap-1">
+          <button
+            type="submit"
+            className="w-2/3 bg-blue-600 text-white h-full p-2 font-bold text-xl hover:bg-blue-500"
+          >
+            Search
+          </button>
+          <button className="w-1/3 bg-red-600 text-white h-full p-2 font-bold text-xl hover:bg-red-500">
+            Clear
+          </button>
+        </div>
+      </form>{" "}
+    </>
   )
 }
 
