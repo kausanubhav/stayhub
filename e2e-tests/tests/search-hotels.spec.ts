@@ -17,13 +17,10 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByText("Sign in Successful!")).toBeVisible()
 })
 
-test('should show hotel search results',async({page})=>{
-    await page.goto(UI_URL)
-    await page.getByPlaceholder("Where are you going?").fill("city new")
-    await page.getByRole('button',{name:'Search'}).click()
-    await expect(page.getByText('1 hotel found in city new')).toBeVisible()
-    await expect(page.getByText('hotel new').first()).toBeVisible()
-
-    
-     
+test("should show hotel search results", async ({ page }) => {
+  await page.goto(UI_URL)
+  await page.getByPlaceholder("Where are you going?").fill("city new")
+  await page.getByRole("button", { name: "Search" }).click()
+  await expect(page.getByText("1 hotel found in city new")).toBeVisible()
+  await expect(page.getByText("hotel new").first()).toBeVisible()
 })

@@ -15,6 +15,7 @@ const TypeSection = () => {
       <div className="grid grid-cols-5 gap-2">
         {hotelTypes.map((type) => (
           <label
+           key={type+new Date()}
             className={
               typeWatch === type
                 ? " cursor-pointer bg-blue-300 rounded-full md:text-md border py-2 px-5 flex font-semibold text-sm justify-center items-center hover:bg-blue-300"

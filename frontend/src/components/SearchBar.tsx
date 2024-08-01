@@ -2,19 +2,101 @@ import { SearchParamsType, useSearchContext } from "@src/contexts/SearchContext"
 import { FC, FormEvent, useEffect, useRef, useState } from "react"
 import { MdTravelExplore } from "react-icons/md"
 import DatePicker from "react-datepicker"
+
 import "react-datepicker/dist/react-datepicker.css"
 import { useNavigate } from "react-router-dom"
 
+import * as apiClient from "../api-client"
+import { useQuery } from "react-query"
+
 type SearchBarProps = {}
 
+// Helper function for suggestions
+const getFilteredSuggestions = (value: string, countries: string[], cities: string[]) => {
+  const inputValue = value.toLowerCase()
+  return [
+    ...countries.filter((country) => country.toLowerCase().startsWith(inputValue)),
+    ...cities.filter((city) => city.toLowerCase().startsWith(inputValue)),
+  ]
+}
+
+// Custom Hook for sticky behavior
+const useSticky = (ref: React.RefObject<HTMLFormElement>) => {
+  const [isFixed, setIsFixed] = useState(false)
+  const originalOffsetTop = useRef<number>(0)
+
+  const handleScroll = () => {
+    if (ref.current) {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop
+      setIsFixed(scrollTop >= originalOffsetTop.current)
+    }
+  }
+
+  useEffect(() => {
+    if (ref.current) {
+      originalOffsetTop.current = ref.current.offsetTop
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [ref])
+
+  return isFixed
+}
+
+// Custom Hook for outside click detection
+const useOutsideClick = (refs: (React.RefObject<HTMLElement> | null)[], callback: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+
+      const isOutside = refs.every((ref) => {
+        if (ref?.current) {
+          return !ref.current.contains(target)
+        }
+        return true //null ref means outside by default; noresultsref for ex
+      })
+
+      if (isOutside) {
+        callback()
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [refs, callback])
+}
+
 const SearchBar: FC<SearchBarProps> = () => {
+  // Extract unique countries and cities from the fetched data
+  const [countries, setCountries] = useState<string[]>([])
+  const [cities, setCities] = useState<string[]>([])
+
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
+
+  const inputRef = useRef<HTMLInputElement | null>(null)
+  const suggestionsRef = useRef<HTMLUListElement | null>(null)
+  const noResultsRef = useRef<HTMLDivElement | null>(null)
+  useOutsideClick([inputRef, suggestionsRef, noResultsRef], () => setShowSuggestions(false))
+
+  const { data: hotels } = useQuery("fetchQuery", apiClient.fetchHotels, {
+    staleTime: Infinity,
+  })
+  useEffect(() => {
+    if (hotels) {
+      setCountries(Array.from(new Set(hotels.map((hotel) => hotel.country).filter(Boolean))))
+      setCities(Array.from(new Set(hotels.map((hotel) => hotel.city).filter(Boolean))))
+    }
+  }, [hotels])
+
   const { searchParams, saveSearchValues } = useSearchContext()
   const [localSearchParams, setLocalSearchParams] = useState<SearchParamsType>(searchParams)
   const navigate = useNavigate()
 
-  const [isFixed, setIsFixed] = useState(false)
   const searchBarRef = useRef<HTMLFormElement | null>(null)
-  const originalOffsetTop = useRef<number>(0)
+  const isFixed = useSticky(searchBarRef)
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     saveSearchValues(localSearchParams)
@@ -27,6 +109,9 @@ const SearchBar: FC<SearchBarProps> = () => {
       ...prev,
       [name]: value,
     }))
+    if (name === "destination") {
+      setSuggestions(getFilteredSuggestions(value, countries, cities))
+    }
   }
   const handleDateChange = (date: Date | null, name: "checkIn" | "checkOut") => {
     if (date) {
@@ -36,32 +121,23 @@ const SearchBar: FC<SearchBarProps> = () => {
       }))
     }
   }
+  const handleSuggestionClick = (
+    suggestion: string
+  ) => {
+    setLocalSearchParams((prev) => ({
+      ...prev,
+      destination: suggestion,
+    }))
+    setShowSuggestions(false)
+    //event.preventDefault()
+  }
 
   const minDate = new Date()
   const maxDate = new Date()
   maxDate.setFullYear(maxDate.getFullYear() + 1)
 
-  const handleScroll = () => {
-    if (searchBarRef.current) {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop
-      if (scrollTop >= originalOffsetTop.current) {
-        setIsFixed(true)
-      } else {
-        setIsFixed(false)
-      }
-    }
-  }
-  useEffect(() => {
-    if (searchBarRef.current) {
-      originalOffsetTop.current = searchBarRef.current.offsetTop
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [])
-
+  const inputHeight = inputRef.current?.offsetHeight || 0
+  const suggestionsTop = inputHeight + 8
   return (
     <>
       <form
@@ -71,16 +147,49 @@ const SearchBar: FC<SearchBarProps> = () => {
         } ${!isFixed ? "w-full" : "max-w-6xl"}`}
         onSubmit={handleSubmit}
       >
-        <div className="flex flex-row flex-1 bg-white items-center p-2">
+        <div className="relative flex flex-row flex-1 bg-white items-center p-2">
           <MdTravelExplore size={25} className="mr-2" />
           <input
+            ref={inputRef}
             placeholder="Where are you going?"
             className="w-full text-md focus:outline-none"
             type="text"
             name="destination"
             value={localSearchParams.destination}
             onChange={handleInputChange}
+            onFocus={() => setShowSuggestions(true)}
+            autoComplete="off"
           />
+          {showSuggestions &&
+            suggestions.length > 0 &&
+            localSearchParams.destination.length > 0 && (
+              <ul
+                ref={suggestionsRef}
+                className={`z-50 absolute left-0 bg-orange-400 border border-gray-300 shadow-lg mt-1 max-h-60 overflow-auto w-full`}
+                style={{ top: `${suggestionsTop}px` }}
+              >
+                {suggestions.map((suggestion, index:number) => (
+                  <li 
+                    onClick={() => handleSuggestionClick( suggestion)}
+                    key={index}
+                    className="p-2 border-b bg-white hover:bg-gray-100 cursor-pointer"
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            )}
+          {showSuggestions &&
+            suggestions.length === 0 &&
+            localSearchParams.destination.length > 0 && (
+              <div
+                ref={noResultsRef}
+                className="absolute left-0 bg-white border border-gray-300 shadow-lg mt-1 max-h-60 overflow-auto w-full"
+                style={{ top: `${suggestionsTop}px` }}
+              >
+                <div className="p-2 font-semibold">No results</div>
+              </div>
+            )}
         </div>
 
         <div className="bg-white flex flex-1 px-2 py-1 gap-2">

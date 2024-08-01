@@ -1,7 +1,6 @@
 import mongoose from "mongoose"
 import { HotelType } from "@shared/types"
 
-
 const HotelSchema = new mongoose.Schema<HotelType>({
   userId: { type: String, required: true },
   name: { type: String, required: true },
@@ -17,6 +16,7 @@ const HotelSchema = new mongoose.Schema<HotelType>({
   imageUrls: [{ type: String, required: true }],
   lastUpdated: { type: Date, required: true },
 })
+HotelSchema.index({ city: 1, country: 1 })
 
 const Hotel = mongoose.model<HotelType>("Hotel", HotelSchema)
 export default Hotel

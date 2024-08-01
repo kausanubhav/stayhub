@@ -70,7 +70,7 @@ const DetailsSection: FC<DetailsSectionProps> = () => {
             Select as Rating
           </option>
           {[1, 2, 3, 4, 5].map((number) => (
-            <option value={number}>{number}</option>
+            <option key={number} value={number}>{number}</option>
           ))}
         </select>
         {errors.starRating && <span className="text-red-500">{errors.starRating.message}</span>}

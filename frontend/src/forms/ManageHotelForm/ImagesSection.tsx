@@ -13,7 +13,6 @@ const ImagesSection: FC<ImagesSectionProps> = () => {
   } = useFormContext<HotelFormData>()
   const existingImageUrls = watch("imageUrls")
 
-
   const handleDelete = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     imageUrl: string
@@ -31,9 +30,15 @@ const ImagesSection: FC<ImagesSectionProps> = () => {
         {existingImageUrls && (
           <div className="grid grid-cols-6 gap-4">
             {existingImageUrls.map((url) => (
-              <div className="relative group">
+              <div
+                key={url + new Date() + Math.floor(Math.random() * 1000)}
+                className="relative group"
+              >
                 <img src={url} alt="" className="min-h-full object-cover" />
-                <button onClick={e=>handleDelete(e,url)} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 text-slate-300 group-hover:opacity-100">
+                <button
+                  onClick={(e) => handleDelete(e, url)}
+                  className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 text-slate-300 group-hover:opacity-100"
+                >
                   Delete
                 </button>
               </div>
@@ -47,7 +52,7 @@ const ImagesSection: FC<ImagesSectionProps> = () => {
           className="w-full text-gray-700 font-normal"
           {...register("imageFiles", {
             validate: (imageFiles) => {
-              const totalLength = imageFiles.length + (existingImageUrls?.length||0)
+              const totalLength = imageFiles.length + (existingImageUrls?.length || 0)
 
               if (totalLength === 0) return "At least one image should be added"
               if (totalLength > 6) return "Total number of images cannot be more than 6"
