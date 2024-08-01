@@ -11,8 +11,8 @@ import compression from "compression"
 
 import authRoutes from "./routes/auth"
 import userRoutes from "./routes/users"
-import myHotelsRoutes from './routes/my-hotels'
-import hotelRoutes from './routes/hotels'
+import myHotelsRoutes from "./routes/my-hotels"
+import hotelRoutes from "./routes/hotels"
 
 const connectionString = process.env.MONGO_CONNECTION_STRING as string
 if (!connectionString) {
@@ -41,7 +41,27 @@ const app = express()
 
 app.use(express.static(path.join(__dirname, "../../frontend/dist")))
 
-app.use(helmet()) // Adds security-related headers
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["self"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+        scriptSrc: ["self"],
+      },
+    },
+    hsts: {
+      maxAge: 31536000, // 1 year in seconds
+      includeSubDomains: true,
+      preload: true,
+    },
+    frameguard: { action: "sameorigin" },
+    noSniff: true,
+    referrerPolicy: { policy: "no-referrer" },
+  })
+)
+
+// Adds security-related headers
 app.use(compression()) // Compresses responses
 //app.use(morgan("combined")) // Logs HTTP requests
 app.use(express.json())
@@ -52,16 +72,15 @@ app.use(cookieParser())
 app.use("/api/users", userRoutes)
 app.use("/api/auth", authRoutes)
 app.use("/api/my-hotels", myHotelsRoutes)
-app.use('/api/hotels',hotelRoutes)
+app.use("/api/hotels", hotelRoutes)
 
-app.get("*",(req:Request,res:Response)=>{
-  res.sendFile(path.join(__dirname,"../../frontend/dist/index.html"))
+app.get("*", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))
 })
 
 let server = app.listen(7000, () => {
   console.log("Server is running on localhost:7000")
 })
-
 
 //Graceful Shutdown
 const shutdown = (signal: NodeJS.Signals) => {

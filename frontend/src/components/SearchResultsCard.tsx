@@ -44,7 +44,7 @@ const SearchResultsCard = ({ hotel }: Props) => {
               </span>
             ))}
             <span className="text-sm">
-              {hotel.facilities.length > 3 && `+${hotel.facilities.length - 3} more`}
+              {hotel.facilities.length > 3 && `+Rs.{hotel.facilities.length - 3} more`}
             </span>
           </div>
           <div className="flex flex-col items-end gap-1">
