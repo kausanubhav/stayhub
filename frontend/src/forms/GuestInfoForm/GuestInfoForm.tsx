@@ -3,13 +3,16 @@ import DatePicker from "react-datepicker"
 import { useSearchContext } from "../../contexts/SearchContext"
 import { useAppContext } from "../../contexts/AppContext"
 import { useLocation, useNavigate } from "react-router-dom"
+import { useMutation } from "react-query"
+
+import * as apiClient from "../../api-client"
 
 type Props = {
   hotelId: string
   pricePerNight: number
 }
 
-type GuestInfoFormData = {
+export type GuestInfoFormData = {
   checkIn: Date
   checkOut: Date
   adultCount: number
@@ -18,10 +21,17 @@ type GuestInfoFormData = {
 
 const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
   const { searchParams: search, saveSearchValues } = useSearchContext()
-  const { isLoggedIn } = useAppContext()
+  const { isLoggedIn, showToast } = useAppContext()
   const navigate = useNavigate()
   const location = useLocation()
-
+  const { mutate } = useMutation(apiClient.bookHotel, {
+    onSuccess: () => {
+      showToast({ message: "Booking saved", type: "SUCCESS" })
+    },
+    onError: () => {
+      showToast({ message: "Error booking hotel", type: "ERROR" })
+    },
+  })
   const {
     watch,
     register,
@@ -63,7 +73,14 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
       adultCount: data.adultCount,
       childCount: data.childCount,
     })
-    navigate(`/hotel/${hotelId}/booking`)
+    const bookingFormData = new FormData()
+    if (hotelId) bookingFormData.append("hotelId", hotelId)
+    bookingFormData.append("checkIn", data.checkIn.toISOString())
+    bookingFormData.append("checkOut", data.checkOut.toISOString())
+    bookingFormData.append("adultCount", data.adultCount.toString())
+    bookingFormData.append("childCount", data.childCount.toString())
+    mutate(bookingFormData)
+    navigate(`/`)
   }
 
   return (

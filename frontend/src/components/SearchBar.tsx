@@ -74,6 +74,7 @@ const SearchBar: FC<SearchBarProps> = () => {
 
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
+  const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const suggestionsRef = useRef<HTMLUListElement | null>(null)
@@ -121,9 +122,7 @@ const SearchBar: FC<SearchBarProps> = () => {
       }))
     }
   }
-  const handleSuggestionClick = (
-    suggestion: string
-  ) => {
+  const handleSuggestionClick = (suggestion: string) => {
     setLocalSearchParams((prev) => ({
       ...prev,
       destination: suggestion,
@@ -138,11 +137,19 @@ const SearchBar: FC<SearchBarProps> = () => {
 
   const inputHeight = inputRef.current?.offsetHeight || 0
   const suggestionsTop = inputHeight + 8
+
+  useEffect(() => {
+    if (searchBarRef.current) {
+      setPlaceholderHeight(searchBarRef.current.offsetHeight)
+    }
+  }, [searchBarRef.current])
   return (
     <>
+      {/* Placeholder */}
+      <div style={{ height: isFixed ? placeholderHeight : "auto" }} />
       <form
         ref={searchBarRef}
-        className={`transition-all duration-400  p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
+        className={`transition-transform duration-300   p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
           isFixed ? " fixed top-0 left-auto  z-50 opacity-90 bg-blue-800" : "-mt-8 bg-orange-400 "
         } ${!isFixed ? "w-full" : "max-w-6xl"}`}
         onSubmit={handleSubmit}
@@ -168,9 +175,9 @@ const SearchBar: FC<SearchBarProps> = () => {
                 className={`z-50 absolute left-0 bg-orange-400 border border-gray-300 shadow-lg mt-1 max-h-60 overflow-auto w-full`}
                 style={{ top: `${suggestionsTop}px` }}
               >
-                {suggestions.map((suggestion, index:number) => (
-                  <li 
-                    onClick={() => handleSuggestionClick( suggestion)}
+                {suggestions.map((suggestion, index: number) => (
+                  <li
+                    onClick={() => handleSuggestionClick(suggestion)}
                     key={index}
                     className="p-2 border-b bg-white hover:bg-gray-100 cursor-pointer"
                   >

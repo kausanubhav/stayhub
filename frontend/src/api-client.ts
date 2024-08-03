@@ -168,3 +168,18 @@ export const fetchHotelById = async (hotelId: string): Promise<HotelType> => {
 
   return response.json()
 }
+
+//book hotels
+
+export const bookHotel = async (hotelBookingFormData: FormData) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/bookings/${hotelBookingFormData.get("hotelId")}`,
+    {
+      credentials: "include",
+      method: "POST",
+      body: hotelBookingFormData,
+    }
+  )
+  if (!response.ok) throw new Error("Error booking hotel")
+  return await response.json()
+}

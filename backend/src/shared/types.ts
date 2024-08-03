@@ -1,3 +1,4 @@
+
 export type HotelType = {
   _id: string
   userId: string
@@ -15,11 +16,22 @@ export type HotelType = {
   lastUpdated: Date
 }
 
-export type HotelSearchResponse={
-  data:HotelType[];
-  pagination:{
-    total:number;
-    page:number;
-    pages:number
+export type BookedHotelType = {
+  _id:string
+  userId: string
+  hotelId: string
+  checkIn: Date
+  checkOut: Date
+  adultCount: number
+  childCount: number
+  
+}
+
+export type HotelSearchResponse = {
+  data: HotelType[]
+  pagination: {
+    total: number
+    page: number
+    pages: number
   }
 }

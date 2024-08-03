@@ -110,11 +110,13 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */,
 
     //alias
-    "baseUrl": "./",
-    "paths": {
-      "@shared/*": ["src/shared/*"],
-      "@utils/*": ["src/utils/*"],
-      "@models/*": ["src/models/*"]
-    }
-  }
+    // "baseUrl": "./",
+    // "paths": {
+    //   "@shared/*": ["src/shared/*"],
+    //   "@utils/*": ["src/utils/*"],
+    //   "@models/*": ["src/models/*"]
+    // }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }

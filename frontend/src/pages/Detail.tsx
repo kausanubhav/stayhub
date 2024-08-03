@@ -2,6 +2,8 @@ import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
 import * as apiClient from "./../api-client"
 import { AiFillStar } from "react-icons/ai"
+import { LazyLoadImage } from "react-lazy-load-image-component"
+
 import GuestInfoForm from "../forms/GuestInfoForm/GuestInfoForm"
 
 const Detail = () => {
@@ -33,7 +35,7 @@ const Detail = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {hotel.imageUrls.map((image) => (
           <div key={image + new Date()} className="h-[300px]">
-            <img
+            <LazyLoadImage
               src={image}
               alt={hotel.name}
               className="rounded-md w-full h-full object-cover object-center"

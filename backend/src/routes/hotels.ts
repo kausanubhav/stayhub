@@ -1,7 +1,8 @@
 import express, { Request, Response } from "express"
 import Hotel from "../models/hotel"
-import { HotelSearchResponse } from "@shared/types"
+// import { HotelSearchResponse } from "@shared/types"
 import { param, validationResult } from "express-validator"
+import { HotelSearchResponse } from "../shared/types"
 const router = express.Router()
 
 router.get("/search", async (req: Request, res: Response) => {
@@ -116,5 +117,8 @@ router.get("/", async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error fetching hotels" })
   }
 })
+
+
+//booking and updating user's booked lists
 
 export default router

@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Schema,Types } from "mongoose"
 import bcrypt from 'bcryptjs'
 export type UserType = {
   _id: string
@@ -6,13 +6,15 @@ export type UserType = {
   password: string
   firstName: string
   lastName: string
+  bookedHotels:Types.Array<Types.ObjectId>
 }
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  bookedHotels:[{type:Schema.Types.ObjectId,ref:'Hotel'}]
 })
 
 userSchema.pre('save',async function(next){
