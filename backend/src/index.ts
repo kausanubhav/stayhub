@@ -13,6 +13,8 @@ import userRoutes from "./routes/users"
 import myHotelsRoutes from "./routes/my-hotels"
 import hotelRoutes from "./routes/hotels"
 import bookingRoutes from "./routes/bookings"
+import saveSearchRoutes from "./routes/searches"
+import recommendationsRoutes from "./routes/recommendations"
 
 const connectionString = process.env.MONGO_CONNECTION_STRING as string
 if (!connectionString) {
@@ -46,7 +48,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["self"],
-        imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com","https://images.unsplash.com"],
         scriptSrc: ["self"],
       },
     },
@@ -79,6 +81,8 @@ app.use("/api/auth", authRoutes)
 app.use("/api/my-hotels", myHotelsRoutes)
 app.use("/api/hotels", hotelRoutes)
 app.use("/api/bookings", bookingRoutes)
+app.use("/api/save_search", saveSearchRoutes)
+app.use("/api/recommendations", recommendationsRoutes)
 
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))

@@ -20,3 +20,6 @@ HotelSchema.index({ city: 1, country: 1 })
 
 const Hotel = mongoose.model<HotelType>("Hotel", HotelSchema)
 export default Hotel
+
+
+

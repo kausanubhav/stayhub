@@ -44,13 +44,37 @@ router.post(
     const errors = validationResult(req)
     if (!errors.isEmpty()) return res.status(400).json({ message: errors.array() })
 
-    const bookingData: BookedHotelType = {
-      ...req.body,
-      hotelId: req.params?.id,
-      userId: req.userId,
-    }
-    const newBooking = new Booking(bookingData)
     try {
+      const { checkIn, checkOut } = req.body
+      const hotelId = req.params.id
+      const userId = req.userId
+      
+      const normalizeDate=(date:Date)=>{
+        const normalized=new Date(date)
+        normalized.setHours(0,0,0,0)
+        return normalized
+      }
+       const normalizedCheckIn = normalizeDate(new Date(checkIn))
+       const normalizedCheckOut = normalizeDate(new Date(checkOut))
+
+      // Check for existing bookings
+      const existingBooking = await Booking.findOne({
+        userId,
+        hotelId,
+        checkIn: normalizedCheckIn,
+        checkOut: normalizedCheckOut,
+      })
+
+      if (existingBooking) {
+        return res.status(409).json({ message: "Booking already exists for this hotel and dates." })
+      }
+
+      const bookingData: BookedHotelType = {
+        ...req.body,
+        hotelId: req.params?.id,
+        userId: req.userId,
+      }
+      const newBooking = new Booking(bookingData)
       await newBooking.save()
 
       await User.findByIdAndUpdate(req.userId, {

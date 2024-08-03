@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import { useNavigate } from "react-router-dom"
 
 import * as apiClient from "../api-client"
-import { useQuery } from "react-query"
+import { useMutation, useQuery } from "react-query"
 
 type SearchBarProps = {}
 
@@ -84,6 +84,14 @@ const SearchBar: FC<SearchBarProps> = () => {
   const { data: hotels } = useQuery("fetchQuery", apiClient.fetchHotels, {
     staleTime: Infinity,
   })
+  const { mutate } = useMutation(apiClient.saveSearch, {
+    onSuccess: (data) => {
+      console.log("Search saved successfuly:", data)
+    },
+    onError: (error) => {
+      console.error("Error saving search query:", error)
+    },
+  })
   useEffect(() => {
     if (hotels) {
       setCountries(Array.from(new Set(hotels.map((hotel) => hotel.country).filter(Boolean))))
@@ -101,6 +109,7 @@ const SearchBar: FC<SearchBarProps> = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
     saveSearchValues(localSearchParams)
+    mutate(localSearchParams.destination)
     navigate("/search")
   }
 

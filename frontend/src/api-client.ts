@@ -180,6 +180,37 @@ export const bookHotel = async (hotelBookingFormData: FormData) => {
       body: hotelBookingFormData,
     }
   )
-  if (!response.ok) throw new Error("Error booking hotel")
+  if (!response.ok) {
+    const errorData = await response.json()
+    const errorMessage = errorData.message || "Error booking hotel"
+
+    if (response.status === 409) throw new Error("Already booked for selected dates.")
+    else throw new Error(errorMessage)
+  }
+  return await response.json()
+}
+
+//save search
+export const saveSearch = async (query: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/save_search`, {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  })
+
+  if (!response.ok) throw new Error("Error saving search query.")
+  return await response.json()
+}
+
+//get recommendations
+export const getRecommendedHotels = async () => {
+  const response = await fetch(`${API_BASE_URL}/api/recommendations`, {
+    credentials: "include",
+  })
+
+  if (!response.ok) throw new Error("Error getting recommended results.")
   return await response.json()
 }
