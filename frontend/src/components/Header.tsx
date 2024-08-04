@@ -6,7 +6,7 @@ import SignOutButton from "./SignOutButton"
 type HeaderProps = {}
 
 const Header: FC<HeaderProps> = () => {
-  const { isLoggedIn } = useAppContext()
+  const { isLoggedIn, showToast } = useAppContext()
   return (
     <div className="bg-blue-800 py-6">
       <div className="  container mx-auto flex justify-between">
@@ -17,6 +17,9 @@ const Header: FC<HeaderProps> = () => {
           {isLoggedIn ? (
             <>
               <Link
+                onClick={() => {
+                  showToast({ message: "Development in process...", type: "ERROR" })
+                }}
                 className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
                 to="/my-bookings"
               >

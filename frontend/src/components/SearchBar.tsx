@@ -158,7 +158,7 @@ const SearchBar: FC<SearchBarProps> = () => {
       <div style={{ height: isFixed ? placeholderHeight : "auto" }} />
       <form
         ref={searchBarRef}
-        className={`transition-transform duration-300   p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
+        className={`transition-transform duration-300 p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
           isFixed ? " fixed top-0 left-auto  z-50 opacity-90 bg-blue-800" : "-mt-8 bg-orange-400 "
         } ${!isFixed ? "w-full" : "max-w-6xl"}`}
         onSubmit={handleSubmit}

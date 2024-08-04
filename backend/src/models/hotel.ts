@@ -16,10 +16,10 @@ const HotelSchema = new mongoose.Schema<HotelType>({
   imageUrls: [{ type: String, required: true }],
   lastUpdated: { type: Date, required: true },
 })
-HotelSchema.index({ city: 1, country: 1 })
+HotelSchema.index({ city: 1, type:1 })
+HotelSchema.index({ city: 1, facilities:1 })
+HotelSchema.index({ country: 1, facilities:1 })
+HotelSchema.index({ country: 1, type:1 })
 
 const Hotel = mongoose.model<HotelType>("Hotel", HotelSchema)
 export default Hotel
-
-
-

@@ -80,6 +80,14 @@ const GuestInfoForm = ({ hotelId, pricePerNight }: Props) => {
     bookingFormData.append("adultCount", data.adultCount.toString())
     bookingFormData.append("childCount", data.childCount.toString())
     mutate(bookingFormData)
+
+    saveSearchValues({
+      destination: "",
+      checkIn: new Date(),
+      checkOut: new Date(),
+      childCount: 1,
+      adultCount: 1,
+    })
     navigate(`/`)
   }
 

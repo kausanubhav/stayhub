@@ -23,23 +23,43 @@ router.get("/", verifyToken, async (req: Request, res: Response) => {
 const getRecommendedHotels = async (userId: string) => {
   const topSearchTerms = await getRelevantSearchTerms(userId)
   const { topFacilities, topTypes } = await getPreferredFacilitiesAndTypes(userId)
+  //console.log("-------")
+ // console.log("top searchterms are ", topSearchTerms)
+ // console.log("top facilities are", topFacilities)
+ // console.log("top types are ", topTypes)
 
+ 
+  //fetches booked hotel ids; used at multiple places, can be refactored.
+  const bookings = await Booking.find({ userId })
+  const bookedHotelIds = bookings.map((booking) => booking.hotelId)
+
+  const objectIdArray = bookedHotelIds
+    .filter((id) => mongoose.Types.ObjectId.isValid(id))
+    .map((id) => new mongoose.Types.ObjectId(id))
   // Fetch hotels based on search terms
-  //  ((city|country)&(type|facility))|()
-   const hotels = await Hotel.find({
-     $or: [
-       {
-         $and: [
-           { $or: [{ city: { $in: topSearchTerms } }, { country: { $in: topSearchTerms } }] },
-           { $or: [{ type: { $in: topTypes } }, { facilities: { $in: topFacilities } }] },
-         ],
-       },
-       {
-         $or: [{ city: { $in: topSearchTerms } }, { country: { $in: topSearchTerms } }],
-         facilities: { $in: topFacilities },
-       },
-     ],
-   }).exec()
+  // Recommends hotels with preferred facilities or type in the country or city being searched frequently.
+  const hotels = await Hotel.find({
+    $and: [
+      {
+        $or: [
+          {
+            $or: [{ city: { $in: topSearchTerms } }, { country: { $in: topSearchTerms } }],
+            type: { $in: topTypes },
+          },
+
+          {
+            $or: [{ city: { $in: topSearchTerms } }, { country: { $in: topSearchTerms } }],
+            facilities: { $in: topFacilities },
+          },
+        ],
+      },
+      {
+        _id: {
+          $nin: objectIdArray,
+        },
+      },
+    ],
+  }).exec()
 
   return hotels.slice(0, 6)
 }
@@ -49,12 +69,12 @@ const getRelevantSearchTerms = async (userId: string): Promise<string[]> => {
   const bookedHotelIds = bookings.map((booking) => booking.hotelId)
 
   const objectIdArray = bookedHotelIds
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
     .map((id) => new mongoose.Types.ObjectId(id))
   const bookedHotels = await Hotel.find({ _id: { $in: objectIdArray } })
-
+  //console.log("booked hotels", bookedHotels)
   const hotelCities = bookedHotels.map((hotel) => hotel.city)
   const hotelCountries = bookedHotels.map((hotel) => hotel.country)
+  //console.log("hotel cities are", hotelCities, " hotel countries are ", hotelCountries)
   // Fetch searches that resulted in bookings
   const searches = await Search.find({ userId }).exec()
   const searchTerms = searches.map((search) => search.query)
@@ -71,7 +91,6 @@ const getPreferredFacilitiesAndTypes = async (userId: string) => {
   const bookings = await Booking.find({ userId }).exec()
   const bookedHotelIds = bookings.map((booking) => booking.hotelId)
   const objectIdArray = bookedHotelIds
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
     .map((id) => new mongoose.Types.ObjectId(id))
   const bookedHotels = await Hotel.find({ _id: { $in: objectIdArray } }).exec()
 
