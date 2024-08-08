@@ -21,28 +21,28 @@ const getFilteredSuggestions = (value: string, countries: string[], cities: stri
 }
 
 // Custom Hook for sticky behavior
-const useSticky = (ref: React.RefObject<HTMLFormElement>) => {
-  const [isFixed, setIsFixed] = useState(false)
-  const originalOffsetTop = useRef<number>(0)
+// const useSticky = (ref: React.RefObject<HTMLFormElement>) => {
+//   const [isFixed, setIsFixed] = useState(false)
+//   const originalOffsetTop = useRef<number>(0)
 
-  const handleScroll = () => {
-    if (ref.current) {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop
-      setIsFixed(scrollTop >= originalOffsetTop.current)
-    }
-  }
+//   const handleScroll = () => {
+//     if (ref.current) {
+//       const scrollTop = window.scrollY || document.documentElement.scrollTop
+//       setIsFixed(scrollTop >= originalOffsetTop.current)
+//     }
+//   }
 
-  useEffect(() => {
-    if (ref.current) {
-      originalOffsetTop.current = ref.current.offsetTop
-    }
+//   useEffect(() => {
+//     if (ref.current) {
+//       originalOffsetTop.current = ref.current.offsetTop
+//     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [ref])
+//     window.addEventListener("scroll", handleScroll)
+//     return () => window.removeEventListener("scroll", handleScroll)
+//   }, [ref])
 
-  return isFixed
-}
+//   return isFixed
+// }
 
 // Custom Hook for outside click detection
 const useOutsideClick = (refs: (React.RefObject<HTMLElement> | null)[], callback: () => void) => {
@@ -74,7 +74,7 @@ const SearchBar: FC<SearchBarProps> = () => {
 
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
-  const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
+  // const [placeholderHeight, setPlaceholderHeight] = useState<number>(0)
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const suggestionsRef = useRef<HTMLUListElement | null>(null)
@@ -104,7 +104,7 @@ const SearchBar: FC<SearchBarProps> = () => {
   const navigate = useNavigate()
 
   const searchBarRef = useRef<HTMLFormElement | null>(null)
-  const isFixed = useSticky(searchBarRef)
+  // const isFixed = useSticky(searchBarRef)
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault()
@@ -147,20 +147,18 @@ const SearchBar: FC<SearchBarProps> = () => {
   const inputHeight = inputRef.current?.offsetHeight || 0
   const suggestionsTop = inputHeight + 8
 
-  useEffect(() => {
-    if (searchBarRef.current) {
-      setPlaceholderHeight(searchBarRef.current.offsetHeight)
-    }
-  }, [searchBarRef.current])
+  // useEffect(() => {
+  //   if (searchBarRef.current) {
+  //     setPlaceholderHeight(searchBarRef.current.offsetHeight)
+  //   }
+  // }, [searchBarRef.current])
   return (
     <>
       {/* Placeholder */}
-      <div style={{ height: isFixed ? placeholderHeight : "auto" }} />
+      {/* <div style={{ height: isFixed ? placeholderHeight : "auto" }} /> */}
       <form
         ref={searchBarRef}
-        className={`transition-transform duration-300 p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 ${
-          isFixed ? " fixed top-0 left-auto  z-50 opacity-90 bg-blue-800" : "-mt-8 bg-orange-400 "
-        } ${!isFixed ? "w-full" : "max-w-6xl"}`}
+        className=" p-3  shadow-md rounded grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 items-center gap-4 -mt-8 bg-orange-400 w-full"
         onSubmit={handleSubmit}
       >
         <div className="relative flex flex-row flex-1 bg-white items-center p-2">

@@ -3,6 +3,8 @@ import multer from "multer"
 //mport { v2 as cloudinary } from "cloudinary"
 import FormData from "form-data"
 import axios from "axios"
+import sharp from "sharp"
+
 import Hotel from "../models/hotel"
 import { HotelType } from "../shared/types"
 import { verifyToken } from "../middleware/auth"
@@ -130,9 +132,14 @@ router.put(
 )
 
 async function uploadImages(imageFiles: Express.Multer.File[]) {
+  const convertToWebP = async (buffer: Buffer): Promise<Buffer> => {
+    return sharp(buffer).webp().toBuffer()
+  }
   const uploadToCloudinary = async (file: Express.Multer.File) => {
+    const webpBuffer = await convertToWebP(file.buffer)
+
     const form = new FormData()
-    form.append("file", file.buffer, { filename: file.originalname })
+    form.append("file", webpBuffer, { filename: file.originalname })
     form.append("upload_preset", "my_preset")
 
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/de41eqe7u/image/upload`

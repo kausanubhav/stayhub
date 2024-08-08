@@ -64,7 +64,8 @@ const getNextImageUrls = (count: number): string[] => {
 }
 
 // Connect to MongoDB
-const connectionString = ""
+const connectionString =
+  "mongodb+srv://kausanubhav2018:eWwtpR2w14JiN6BF@cluster0.prxvtuz.mongodb.net/"
 mongoose
   .connect(connectionString)
   .then(() => {
