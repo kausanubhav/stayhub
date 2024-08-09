@@ -15,6 +15,7 @@ import hotelRoutes from "./routes/hotels"
 import bookingRoutes from "./routes/bookings"
 import saveSearchRoutes from "./routes/searches"
 import recommendationsRoutes from "./routes/recommendations"
+import reviewRoutes from "./routes/reviews"
 
 const connectionString = process.env.MONGO_CONNECTION_STRING as string
 if (!connectionString) {
@@ -83,6 +84,7 @@ app.use("/api/hotels", hotelRoutes)
 app.use("/api/bookings", bookingRoutes)
 app.use("/api/save_search", saveSearchRoutes)
 app.use("/api/recommendations", recommendationsRoutes)
+app.use('/api/reviews',reviewRoutes)
 
 app.get("*", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "../../frontend/dist/index.html"))

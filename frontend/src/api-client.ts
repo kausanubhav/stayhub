@@ -1,3 +1,4 @@
+import { ReviewType } from "./pages/Detail"
 import { RegisterFormData } from "./pages/Register"
 import { SignInFormData } from "./pages/SignIn"
 import { HotelSearchResponse, HotelType } from "@shared/types"
@@ -212,5 +213,28 @@ export const getRecommendedHotels = async () => {
   })
 
   if (!response.ok) throw new Error("Error getting recommended results.")
+  return await response.json()
+}
+
+export const getUserReviews = async (hotelId: string): Promise<ReviewType[]> => {
+  const response = await fetch(`${API_BASE_URL}/api/reviews/${hotelId}`, {
+    credentials: "include",
+  })
+
+  if (!response.ok) throw new Error("Error getting reviews results.")
+  return await response.json()
+}
+
+export const addUserReview = async (hotelId: string, review: string) => {
+  const response = await fetch(`${API_BASE_URL}/api/reviews/${hotelId}`, {
+    credentials: "include",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({data:review}),
+  })
+
+  if (!response.ok) throw new Error("Error adding review.")
   return await response.json()
 }

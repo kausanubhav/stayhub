@@ -1,5 +1,13 @@
+import mongoose from "mongoose";
 
-export type HotelType = {
+  type ReviewType = {
+  userId: string
+  data: string;
+  hotelId:mongoose.Types.ObjectId
+  date:Date
+}
+
+ type HotelType = {
   _id: string
   userId: string
   name: string
@@ -14,20 +22,20 @@ export type HotelType = {
   starRating: number
   imageUrls: string[]
   lastUpdated: Date
+  reviews: mongoose.Types.ObjectId[]
 }
 
-export type BookedHotelType = {
-  _id:string
+ type BookedHotelType = {
+  _id: string
   userId: string
   hotelId: string
   checkIn: Date
   checkOut: Date
   adultCount: number
   childCount: number
-  
 }
 
-export type HotelSearchResponse = {
+ type HotelSearchResponse = {
   data: HotelType[]
   pagination: {
     total: number
@@ -35,3 +43,6 @@ export type HotelSearchResponse = {
     pages: number
   }
 }
+
+
+export type { HotelType, HotelSearchResponse, BookedHotelType, ReviewType }

@@ -1,6 +1,9 @@
 import mongoose from "mongoose"
 import { HotelType } from "../shared/types"
 
+
+
+
 const HotelSchema = new mongoose.Schema<HotelType>({
   userId: { type: String, required: true },
   name: { type: String, required: true },
@@ -15,11 +18,12 @@ const HotelSchema = new mongoose.Schema<HotelType>({
   starRating: { type: Number, required: true, min: 1, max: 5 },
   imageUrls: [{ type: String, required: true }],
   lastUpdated: { type: Date, required: true },
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }], 
 })
-HotelSchema.index({ city: 1, type:1 })
-HotelSchema.index({ city: 1, facilities:1 })
-HotelSchema.index({ country: 1, facilities:1 })
-HotelSchema.index({ country: 1, type:1 })
+HotelSchema.index({ city: 1, type: 1 })
+HotelSchema.index({ city: 1, facilities: 1 })
+HotelSchema.index({ country: 1, facilities: 1 })
+HotelSchema.index({ country: 1, type: 1 })
 
 const Hotel = mongoose.model<HotelType>("Hotel", HotelSchema)
 export default Hotel
