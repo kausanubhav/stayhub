@@ -22,7 +22,7 @@ type HotelType = {
   starRating: number
   imageUrls: string[]
   lastUpdated: Date
-  reviews: mongoose.Types.ObjectId[]
+  reviews?: mongoose.Types.ObjectId[]
 }
 
 type BookedHotelType = {
