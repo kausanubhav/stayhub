@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-  type ReviewType = {
+type ReviewType = {
   userId: string
-  data: string;
-  hotelId:mongoose.Types.ObjectId
-  date:Date
+  data: string
+  hotelId: mongoose.Types.ObjectId
+  date: Date
 }
 
- type HotelType = {
+type HotelType = {
   _id: string
   userId: string
   name: string
@@ -25,7 +25,7 @@ import mongoose from "mongoose";
   reviews: mongoose.Types.ObjectId[]
 }
 
- type BookedHotelType = {
+type BookedHotelType = {
   _id: string
   userId: string
   hotelId: string
@@ -35,7 +35,7 @@ import mongoose from "mongoose";
   childCount: number
 }
 
- type HotelSearchResponse = {
+type HotelSearchResponse = {
   data: HotelType[]
   pagination: {
     total: number
@@ -43,6 +43,5 @@ import mongoose from "mongoose";
     pages: number
   }
 }
-
 
 export type { HotelType, HotelSearchResponse, BookedHotelType, ReviewType }
