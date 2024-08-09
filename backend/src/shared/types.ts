@@ -1,9 +1,9 @@
-import mongoose from "mongoose"
+import { Types } from 'mongoose'; // For Types only
 
 type ReviewType = {
   userId: string
   data: string
-  hotelId: mongoose.Types.ObjectId
+  hotelId: Types.ObjectId
   date: Date
 }
 
@@ -22,7 +22,7 @@ type HotelType = {
   starRating: number
   imageUrls: string[]
   lastUpdated: Date
-  reviews?: mongoose.Types.ObjectId[]
+  reviews?: Types.ObjectId[]
 }
 
 type BookedHotelType = {
