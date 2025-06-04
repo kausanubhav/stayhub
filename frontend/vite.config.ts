@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react(), pluginChecker({ typescript: true })],
   resolve: {
     alias: {
-      "@shared": path.resolve(__dirname, "../backend/src/shared"),
+      // "@shared": path.resolve(__dirname, "../backend/src/shared"),
       "@src": path.resolve(__dirname, "src"),
     },
   },

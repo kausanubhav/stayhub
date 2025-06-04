@@ -26,7 +26,7 @@
   "extends": "./tsconfig.json",
   //* matches 0 or more charcters in a file or a directory name
   //** matches 0 or more directories; both of these glob patterns
-  "include": ["src/**/*.ts", "src/**/*.tsx", "../backend/src/shared/**/*"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
   // "include": [
   //   "src/**/*.ts",
   //   "src/backend/src/shared/types.ts" // Add this line to include the specific file

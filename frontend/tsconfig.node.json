@@ -11,7 +11,7 @@
     "baseUrl": "./",
     "paths": {
       "src/*": ["src/*"], // Ensure this matches your tsconfig.json paths
-      "@shared/*": ["../backend/src/shared/*"]
+      // "@shared/*": ["../backend/src/shared/*"]
     }
   },
   "include": ["vite.config.ts"]
