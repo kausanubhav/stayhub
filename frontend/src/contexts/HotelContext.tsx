@@ -1,4 +1,4 @@
-import { HotelType } from "@shared/types"
+import { HotelType } from "@src/types"
 import { createContext, useContext, useState } from "react"
 
 type HotelContextType = {

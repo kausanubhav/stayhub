@@ -11,9 +11,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@shared/*": ["../backend/src/shared/*"],
-      "@src/*": ["src/*"] // Ensure this matches the Vite alias
+      "@src/*": ["src/*"]  // ✅ Keeps alias for your own frontend code
     },
-   "types": ["node"]
+    "types": ["node"]
   }
 }

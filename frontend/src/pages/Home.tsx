@@ -1,7 +1,7 @@
 import { useQuery } from "react-query"
 import * as apiClient from "../api-client"
 import LatestDestinationCard from "@src/components/LatestDestinationCard"
-import { HotelType } from "@shared/types"
+import { HotelType } from "@src/types"
 import { useAppContext } from "@src/contexts/AppContext"
 
 const Home = () => {

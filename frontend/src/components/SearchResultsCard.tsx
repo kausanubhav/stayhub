@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { AiFillStar } from "react-icons/ai"
 import { LazyLoadImage } from "react-lazy-load-image-component"
-import { HotelType } from "@shared/types"
+import { HotelType } from "@src/types"
 type Props = {
   hotel: HotelType
 }
